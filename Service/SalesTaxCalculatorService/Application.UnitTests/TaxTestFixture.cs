@@ -5,7 +5,7 @@ using SalesTaxCalculatorService.Domain.Enums;
 using SalesTaxCalculatorService.Domain.Models;
 using Xunit;
 
-namespace Application.UnitTests
+namespace SalesTaxCalculatorService.Application.UnitTests
 {
     public class TaxTestFixture
     {

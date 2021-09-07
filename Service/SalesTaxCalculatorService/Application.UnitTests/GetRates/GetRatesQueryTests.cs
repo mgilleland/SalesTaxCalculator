@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Application.UnitTests.GetRates
+namespace SalesTaxCalculatorService.Application.UnitTests.GetRates
 {
     [Collection("TaxTests")]
     public class GetRatesQueryTests
@@ -29,7 +29,7 @@ namespace Application.UnitTests.GetRates
             var query = new GetRatesQuery
             {
                 CustomerId = 1,
-                RatesRequest = new RatesRequest("US", "33558", string.Empty, string.Empty, string.Empty)
+                RatesRequest = new RatesRequest("US", "33614", string.Empty, string.Empty, string.Empty)
             };
 
             var response = await sut.Handle(query, CancellationToken.None);

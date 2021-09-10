@@ -9,7 +9,7 @@ The overall solution setup is based on a [Clean Architecture](https://blog.clean
 * Global Error Handling Middleware
 * API Versioning
 * Swagger UI
-* Repository Pattern
+* Repository and Factory Patterns
 * Fluent Validation
 * Unit and Integration Tests
 
@@ -17,7 +17,7 @@ The overall solution setup is based on a [Clean Architecture](https://blog.clean
 Once the Sales Tax Calculator service is deployed or is running using Visual Studio, it can be called using the auto-generated Swagger UI or by a tool such as Postman. 
 _(Note: An API Key must be obtained from TaxJar and placed in the appsettings.json file for the calls to be successful)_
 
-The Swagger UI will produce a page produce a page similar to this:
+The Swagger UI will produce a page similar to this:
 
 ![](Images/MainPage.png)
 

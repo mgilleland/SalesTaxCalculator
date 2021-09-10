@@ -2,7 +2,7 @@
 using SalesTaxCalculatorService.Application.Common.Exceptions;
 using SalesTaxCalculatorService.Application.Common.Interfaces;
 using SalesTaxCalculatorService.Domain.Enums;
-using SalesTaxCalculatorService.Domain.Models;
+using SalesTaxCalculatorService.Domain.Models.Rates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,12 +31,6 @@ namespace SalesTaxCalculatorService.Application.SalesTax.Queries.GetRates
                 if (request.CustomerId.HasValue)
                 {
                     var customer = _customerRepository.GetCustomer(request.CustomerId.Value);
-
-                    if (customer == null)
-                    {
-                        throw new NotFoundException("Customer", request.CustomerId.Value);
-                    }
-
                     taxServiceType = customer.PreferredTaxEngine;
                 }
 

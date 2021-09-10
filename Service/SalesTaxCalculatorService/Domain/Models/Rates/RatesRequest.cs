@@ -1,4 +1,4 @@
-﻿namespace SalesTaxCalculatorService.Domain.Models
+﻿namespace SalesTaxCalculatorService.Domain.Models.Rates
 {
     public class RatesRequest
     {

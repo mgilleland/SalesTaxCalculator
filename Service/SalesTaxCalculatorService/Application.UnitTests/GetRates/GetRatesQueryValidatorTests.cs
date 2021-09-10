@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using SalesTaxCalculatorService.Application.SalesTax.Queries.GetRates;
-using SalesTaxCalculatorService.Domain.Models;
+using SalesTaxCalculatorService.Domain.Models.Rates;
 using Xunit;
 
 namespace SalesTaxCalculatorService.Application.UnitTests.GetRates

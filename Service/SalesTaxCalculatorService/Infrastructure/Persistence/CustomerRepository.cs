@@ -3,6 +3,7 @@ using SalesTaxCalculatorService.Domain.Entities;
 using SalesTaxCalculatorService.Domain.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using SalesTaxCalculatorService.Application.Common.Exceptions;
 
 namespace SalesTaxCalculatorService.Infrastructure.Persistence
 {
@@ -54,7 +55,14 @@ namespace SalesTaxCalculatorService.Infrastructure.Persistence
 
         public Customer GetCustomer(int customerId)
         {
-            return _customers.FirstOrDefault(c => c.Id == customerId);
+            var customer = _customers.FirstOrDefault(c => c.Id == customerId);
+
+            if (customer == null)
+            {
+                throw new NotFoundException("Customer", customerId);
+            }
+
+            return customer;
         }
     }
 }

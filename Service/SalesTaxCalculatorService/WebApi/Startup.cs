@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Polly;
+using Polly.Extensions.Http;
 using SalesTaxCalculatorService.Application;
 using SalesTaxCalculatorService.Application.Common.Configuration;
 using SalesTaxCalculatorService.Application.Common.Interfaces;
@@ -11,6 +13,7 @@ using SalesTaxCalculatorService.Infrastructure;
 using SalesTaxCalculatorService.Infrastructure.Services;
 using SalesTaxCalculatorService.WebApi.Common.Middleware;
 using System;
+using System.Net.Http;
 
 namespace SalesTaxCalculatorService.WebApi
 {
@@ -36,7 +39,9 @@ namespace SalesTaxCalculatorService.WebApi
             {
                 c.BaseAddress = new Uri(taxJarSettings.BaseUrl);
                 c.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Token token={taxJarSettings.ApiKey}");
-            });
+            })
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             AddVersioning(services);
             services.AddControllers();
@@ -89,6 +94,25 @@ namespace SalesTaxCalculatorService.WebApi
                     options.GroupNameFormat = "VVV";
                     options.SubstituteApiVersionInUrl = true;
                 });
+        }
+
+        private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                    // HttpRequestException, 5XX and 408  
+                    .HandleTransientHttpError()
+                    // 404  
+                    .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    // Retry two times after delay  
+                    .WaitAndRetryAsync(2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+                ;
+        }
+
+        private IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
         }
     }
 }

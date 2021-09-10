@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using SalesTaxCalculatorService.Application.Common.Interfaces;
-using SalesTaxCalculatorService.Domain.Models;
+using SalesTaxCalculatorService.Application.SalesTax.Queries.CalculateTax;
+using SalesTaxCalculatorService.Domain.Models.Rates;
+using SalesTaxCalculatorService.Domain.Models.Taxes;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -46,7 +48,36 @@ namespace SalesTaxCalculatorService.Infrastructure.Services.TaxJar
 
             var rates = await JsonSerializer.DeserializeAsync<RatesResponse>(responseStream);
 
-            return _mapper.Map<Rate, TaxRates>(rates?.Rate);
+            return request.Country switch
+            {
+                "US" => _mapper.Map<Rate, UsTaxRates>(rates?.Rate),
+                "CA" => _mapper.Map<Rate, CaTaxRates>(rates?.Rate),
+                "AU" => _mapper.Map<Rate, AuTaxRates>(rates?.Rate),
+                _ => _mapper.Map<Rate, EuTaxRates>(rates?.Rate),
+            };
+        }
+
+        public async Task<OrderTaxes> CalculateTaxes(CalculateTaxQuery request)
+        {
+            var taxRequest = _mapper.Map<CalculateTaxQuery, TaxRequest>(request);
+
+            var taxRequestJson = new StringContent(
+                JsonSerializer.Serialize(taxRequest),
+                Encoding.UTF8,
+                "application/json");
+
+            using var response =
+                await _httpClient.PostAsync("taxes", taxRequestJson);
+
+            response.EnsureSuccessStatusCode();
+
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
+
+            var taxes = await JsonSerializer.DeserializeAsync<TaxResponse>(responseStream);
+
+            var orderTaxes = _mapper.Map<Tax, OrderTaxes>(taxes?.Tax);
+
+            return orderTaxes;
         }
     }
 }

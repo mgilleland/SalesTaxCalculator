@@ -1,7 +1,7 @@
 ﻿using SalesTaxCalculatorService.Application.Common.Exceptions;
 using SalesTaxCalculatorService.Application.Common.Interfaces;
 using SalesTaxCalculatorService.Application.SalesTax.Queries.GetRates;
-using SalesTaxCalculatorService.Domain.Models;
+using SalesTaxCalculatorService.Domain.Models.Rates;
 using Shouldly;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +32,7 @@ namespace SalesTaxCalculatorService.Application.UnitTests.GetRates
                 RatesRequest = new RatesRequest("US", "33614", string.Empty, string.Empty, string.Empty)
             };
 
-            var response = await sut.Handle(query, CancellationToken.None);
+            var response = (UsTaxRates)await sut.Handle(query, CancellationToken.None);
 
             response.State.ShouldBe("Florida");
             response.City.ShouldBe("Tampa");

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesTaxCalculatorService.Application.SalesTax.Queries.GetRates;
-using SalesTaxCalculatorService.Domain.Models;
+using SalesTaxCalculatorService.Domain.Models.Rates;
 using System.Threading.Tasks;
 
 namespace SalesTaxCalculatorService.WebApi.Controllers
